@@ -1,0 +1,8 @@
+Usage: insforge deployments deploy [options] [directory]
+
+Deploy a frontend project to Vercel
+
+Options:
+  --env <vars>   Environment variables as JSON (e.g. {"KEY":"value"})
+  --meta <meta>  Deployment metadata as JSON
+  -h, --help     display help for command
