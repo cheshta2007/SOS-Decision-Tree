@@ -1,0 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  
+  --color-danger: #ef4444;       /* Fire / Med / General Emergency */
+  --color-danger-hover: #dc2626;
+  --color-danger-glow: rgba(239, 68, 68, 0.4);
+  
+  --color-warning: #f59e0b;      /* Accident */
+  --color-info: #3b82f6;         /* Police / Water */
+  --color-success: #10b981;
+  
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* App Container */
+.app-container {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding: 1.5rem;
+  padding-bottom: 120px; /* Space for sticky footer */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #ffffff, #a0a0a0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.icon-btn {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--bg-tertiary);
+}
+.icon-btn:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Emergency Selector Grid */
+.emergency-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.emergency-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  border: 2px solid transparent;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.emergency-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.emergency-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--bg-tertiary);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+.emergency-card:hover::before {
+  opacity: 1;
+}
+
+.emergency-card.fire { color: var(--color-danger); }
+.emergency-card.medical { color: var(--color-danger); }
+.emergency-card.accident { color: var(--color-warning); }
+.emergency-card.flood { color: var(--color-info); }
+.emergency-card.crime { color: var(--text-primary); }
+
+.emergency-card svg {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.1));
+}
+
+/* Voice Input Card */
+.voice-card {
+  grid-column: span 2;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  color: var(--text-primary);
+  border: 1px solid var(--bg-tertiary);
+}
+.voice-card.recording {
+  border-color: var(--color-danger);
+  animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 var(--color-danger-glow); }
+  70% { box-shadow: 0 0 0 10px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* Voice Indicator */
+.voice-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-danger);
+  font-weight: 700;
+  animation: pulse 1.5s infinite;
+}
+
+/* Decision Tree View */
+.decision-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.ai-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.ai-status svg {
+  animation: spin 2s linear infinite;
+}
+
+.critical-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step-card {
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--color-danger);
+  padding: 1.25rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+/* Stagger animations for steps */
+.step-card:nth-child(1) { animation-delay: 0.1s; }
+.step-card:nth-child(2) { animation-delay: 0.2s; }
+.step-card:nth-child(3) { animation-delay: 0.3s; }
+.step-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Sticky Footer Actions */
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(to top, var(--bg-primary) 70%, transparent);
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  z-index: 50;
+}
+.footer-inner {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  gap: 0.75rem;
+  pointer-events: auto;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 1rem 0.5rem;
+  border-radius: var(--radius-lg);
+  font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-transform: uppercase;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.action-btn svg { width: 24px; height: 24px; margin-bottom: 0.25rem; }
+
+.btn-ambulance { background: var(--color-danger); }
+.btn-ambulance:hover { background: var(--color-danger-hover); box-shadow: 0 0 20px var(--color-danger-glow); }
+
+.btn-police { background: var(--color-info); }
+.btn-police:hover { filter: brightness(1.1); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+
+.btn-fire { background: var(--color-warning); }
+.btn-fire:hover { filter: brightness(1.1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+
+
+/* Map Container */
+.map-container {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .app-container { padding: 1rem; padding-bottom: 110px; }
+  .sticky-footer { padding: 1rem; }
+  .action-btn { font-size: 0.75rem; padding: 0.75rem 0.25rem; }
+  .step-card { font-size: 1rem; padding: 1rem; }
+}
