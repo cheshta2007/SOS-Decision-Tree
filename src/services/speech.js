@@ -24,7 +24,7 @@ export const stopSpeaking = () => {
   }
 };
 
-export const startListening = (onResult, onError, language = 'en-US') => {
+export const startListening = (onResult, onError, language = 'en-US', continuous = false) => {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   if (!SpeechRecognition) {
@@ -34,18 +34,28 @@ export const startListening = (onResult, onError, language = 'en-US') => {
 
   const recognition = new SpeechRecognition();
   recognition.lang = language === 'hi' ? 'hi-IN' : 'en-US';
-  recognition.continuous = false;
+  recognition.continuous = continuous;
   recognition.interimResults = false;
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    if (onResult) onResult(transcript);
+    let transcript = "";
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        transcript += event.results[i][0].transcript;
+      }
+    }
+    if (transcript && onResult) onResult(transcript.trim());
   };
 
   recognition.onerror = (event) => {
     if (onError) onError(event.error);
   };
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error("Recognition start error:", e);
+  }
+  
   return recognition;
 };

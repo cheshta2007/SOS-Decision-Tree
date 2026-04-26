@@ -4,27 +4,27 @@ import { Phone, Shield, Flame } from 'lucide-react';
 export default function StickyFooter() {
   return (
     <div className="sticky-footer">
-      <div className="footer-inner">
+      <div className="footer-inner glass">
         <button 
-          className="action-btn btn-ambulance"
+          className="action-btn ambulance"
           onClick={() => window.location.href = 'tel:108'}
         >
-          <Phone />
-          Ambulance
+          <Phone size={20} />
+          <span>Ambulance</span>
         </button>
         <button 
-          className="action-btn btn-police"
+          className="action-btn police"
           onClick={() => window.location.href = 'tel:100'}
         >
-          <Shield />
-          Police
+          <Shield size={20} />
+          <span>Police</span>
         </button>
         <button 
-          className="action-btn btn-fire"
+          className="action-btn fire"
           onClick={() => window.location.href = 'tel:101'}
         >
-          <Flame />
-          Fire
+          <Flame size={20} />
+          <span>Fire</span>
         </button>
       </div>
     </div>

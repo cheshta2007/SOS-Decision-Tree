@@ -17,16 +17,12 @@ export default function Header({ language, setLanguage, bystanderMode, setBystan
         </button>
         
         <button 
-          className={`icon-btn ${bystanderMode ? 'active' : ''}`}
+          className={`icon-btn bystander-toggle ${bystanderMode ? 'active' : ''}`}
           onClick={() => setBystanderMode(!bystanderMode)}
-          style={{ 
-            borderColor: bystanderMode ? 'var(--color-success)' : 'var(--bg-tertiary)',
-            color: bystanderMode ? 'var(--color-success)' : 'var(--text-primary)'
-          }}
           title="Bystander Mode"
         >
-          <Heart size={16} />
-          {bystanderMode ? "Helping Others" : "Self"}
+          <Heart size={16} fill={bystanderMode ? "currentColor" : "none"} />
+          <span>{bystanderMode ? "Helper" : "Self"}</span>
         </button>
       </div>
     </header>

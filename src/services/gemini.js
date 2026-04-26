@@ -17,16 +17,34 @@ export async function getEmergencyInstructions(emergencyType, context = "") {
 
   const prompt = `You are an emergency response AI designed for the "Critical First 60 Seconds" of an incident. 
 The emergency is: "${emergencyType}".
-Additional context from user: "${context}".
+Additional context (user description/follow-ups): "${context}".
 
-Respond ONLY with a JSON array of string steps. Give exactly 3 to 5 highly actionable, short, life-saving steps. Format them clearly. Do not use markdown backticks in the response text itself (just the raw JSON string).
-Example: ["Check for breathing", "Call for help immediately", "Apply firm pressure to the wound"]`;
+Respond ONLY with a valid JSON object in the following format:
+{
+  "severity": "High" | "Medium" | "Low",
+  "immediateActions": ["Action 1", "Action 2", ...],
+  "secondaryMeasures": ["Measure 1", "Measure 2", ...],
+  "followUpQuestions": ["Question 1?"]
+}
+
+Guidelines:
+1. Provide 3-5 highly actionable, short, life-saving "immediateActions".
+2. Provide 2-3 "secondaryMeasures" for precautions/prevention.
+3. Keep tokens concise. 
+4. If follow-up questions are needed to clarify (e.g., "Is the person breathing?"), include them.
+5. Do not use markdown backticks in the response.`;
 
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     let text = response.text();
+    // Strip possible markdown code blocks
     text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    // Attempt to find JSON if there's surrounding text
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
     return JSON.parse(text);
   } catch (err) {
     console.error("Gemini API Error:", err);
@@ -36,11 +54,24 @@ Example: ["Check for breathing", "Call for help immediately", "Apply firm pressu
 
 function getFallbackInstructions(type) {
   const fallbacks = {
-    "Fire": ["Evacuate the area immediately", "Stay low to avoid smoke", "Call 911 or Fire Dept once safe"],
-    "Medical Emergency": ["Check if the person is responsive", "Call for an ambulance", "Begin CPR if not breathing"],
-    "Accident": ["Ensure your own safety first", "Do not move the injured unless in immediate danger", "Call emergency services"],
-    "Flood": ["Move to higher ground immediately", "Do not walk or drive through flood waters", "Wait for rescue services"],
-    "Crime": ["Move to a safe location", "Do not confront the attacker", "Call police and provide a description"]
+    "Fire": {
+      "severity": "High",
+      "immediateActions": ["Evacuate the area immediately", "Stay low to avoid smoke", "Call Fire Dept once safe"],
+      "secondaryMeasures": ["Close doors behind you to contain fire", "Do not use elevators"],
+      "followUpQuestions": ["Is anyone trapped?", "What floor are you on?"]
+    },
+    "Medical Emergency": {
+      "severity": "High",
+      "immediateActions": ["Check if the person is responsive", "Call for an ambulance", "Begin CPR if not breathing"],
+      "secondaryMeasures": ["Keep the person warm", "Do not give them water"],
+      "followUpQuestions": ["Is the person conscious?", "Are they bleeding?"]
+    }
   };
-  return fallbacks[type] || ["Seek safety immediately", "Call emergency services", "Wait for professionals"];
+  
+  return fallbacks[type] || {
+    "severity": "Medium",
+    "immediateActions": ["Seek safety immediately", "Call emergency services", "Wait for professionals"],
+    "secondaryMeasures": ["Stay calm and observe surroundings", "Warn others nearby"],
+    "followUpQuestions": ["Where exactly are you?", "What do you see?"]
+  };
 }

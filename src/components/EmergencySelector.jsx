@@ -16,7 +16,6 @@ export default function EmergencySelector({ onSelect, language }) {
 
   const handleVoiceInput = () => {
     if (isRecording) {
-      stopSpeaking(); // stop any audio just in case
       return;
     }
     
@@ -26,7 +25,6 @@ export default function EmergencySelector({ onSelect, language }) {
     startListening(
       (transcript) => {
         setIsRecording(false);
-        // We received transcript. Trigger search/AI.
         onSelect("Voice Input", transcript);
       },
       (error) => {
@@ -38,8 +36,11 @@ export default function EmergencySelector({ onSelect, language }) {
   };
 
   return (
-    <>
-      <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>What is your emergency?</h2>
+    <div className="selector-view">
+      <div className="selector-header">
+        <h2 className="section-title">Emergency Response</h2>
+        <p className="subtitle">Select incident type or describe the situation</p>
+      </div>
       
       <div className="emergency-grid">
         {emergencies.map((em) => {
@@ -50,34 +51,34 @@ export default function EmergencySelector({ onSelect, language }) {
               className={`emergency-card ${em.className}`}
               onClick={() => onSelect(em.label)}
             >
-              <Icon />
-              <span>{em.label}</span>
+              <div className="icon-wrapper">
+                <Icon size={32} />
+              </div>
+              <span className="card-label">{em.label}</span>
             </button>
           );
         })}
 
         <button 
-          className={`emergency-card voice-card ${isRecording ? 'recording' : ''}`}
+          className={`emergency-card voice-card ${isRecording ? 'recording listening' : ''}`}
           onClick={handleVoiceInput}
         >
-          {isRecording ? (
-            <div className="voice-indicator">
-              <Mic /> Listening...
-            </div>
-          ) : (
-            <>
-              <Mic />
-              <span>Tap to Speak</span>
-            </>
-          )}
+          <div className="icon-wrapper">
+            <Mic size={32} />
+          </div>
+          <span className="card-label">
+            {isRecording ? "Listening..." : "Describe Situation"}
+          </span>
+          {isRecording && <div className="voice-wave"></div>}
         </button>
       </div>
 
       {speechError && (
-        <p style={{ color: 'var(--color-danger)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-          {speechError}
-        </p>
+        <div className="error-toast">
+          <ShieldAlert size={16} />
+          <span>{speechError}</span>
+        </div>
       )}
-    </>
+    </div>
   );
 }
